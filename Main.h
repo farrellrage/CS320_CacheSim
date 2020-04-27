@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
 using namespace std;
 
 #define ERROR_CHAR '#'
@@ -27,11 +28,6 @@ using namespace std;
 #define FULL_ASSOCIATIVE_CACHE_SIZE_BYTES	16384
 
 const int OUTPUT_LINE = 50;
-
-enum HotColdLru {
-	LEFT = 0,
-	RIGHT = 1
-};
 
 const vector<int> DirectMappedCacheSizeBytes {
 	1024,

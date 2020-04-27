@@ -36,12 +36,12 @@ void SetAscLruUpdate(vector<vector<SetAscCacheEntry>>& cache,
 		if (way != usedWay)
 		{
 			//Increment the LRU count for the entry
-			cache[way][setIndex].turnsSinceLastUsed++;
+			cache[way][setIndex].lruCount++;
 		} //if
 	} //for
 
 	//Reset the LRU count for the used entry
-	cache[usedWay][setIndex].turnsSinceLastUsed = 0;
+	cache[usedWay][setIndex].lruCount = 0;
 } //SetAscLruUpdate
 
 void FullAscLruUpdate(vector<FullAscCacheEntry>& cache, int usedIndex)
@@ -179,64 +179,52 @@ void FullAscLruReplacementPolicy(ifstream& fin, ofstream& fout)
 
 int FindHotColdLruIndex(vector<int>& map)
 {
-	int entry = 0;
-	int hotColdEntry = 0;
-
-	//Calculate how many levels are in the hot/cold structure
-	int levels = (int)(ceil(log2(map.size())));
+	int hotColdEntry = ceil(map.size() / 2);
+	int levels = ceil(log2(map.size()));
+	int partition = hotColdEntry;
 
 	//Scan through each level in the hot/cold structure
 	for (int i = 0; i < levels; i++)
 	{
 		//Determine which direction to follow down the structure
-		if (map[hotColdEntry] == 0)
+		if (map[hotColdEntry] == 1)
 		{
 			//Calculate the next entry to check
-			hotColdEntry += ((2 * i) + 1);
+			hotColdEntry -= int(partition / 2);
+			partition = int(partition / 2);
 		} //if
-		else if (map[hotColdEntry] == 1)
+		else 
 		{
 			//Calculate the next entry to check
-			hotColdEntry += ((2 * i) + 2);
-
-			//For every '1' we move further along the cache
-			entry += (unsigned int)pow(2, (levels - i));
+			hotColdEntry += int(partition / 2);
+			partition = int(partition / 2) + 1;
 		} //else if
-		else
-		{
-			return -1;
-		} //else
-
-		//Update the hot/cold map entry
-		map[hotColdEntry] = (map[hotColdEntry] == 0) ? 1 : 0;
 	} //for
 
-	return entry;
+	return (map[hotColdEntry] == 0) ? hotColdEntry + 1 : hotColdEntry;
 } //FindHotColdLruIndex
 
 void FullAscHotColdLruUpdate(vector<int>& map, int usedIndex, int cacheSize)
 {
-	int cacheEntries = map.size() + 1;
-	int cachePartition = 0;
-	int hotColdEntry = 0;
+	int hotColdEntry = ceil(map.size() / 2);
+	int levels = ceil(log2(map.size()));
+	int partition = hotColdEntry;
 
-	//Calculate how many levels are in the hot/cold structure
-	int levels = (int)(ceil(log2(map.size())));
-
-	//For each level in the map structure
 	for (int i = 0; i < levels; i++)
 	{
-
-		//Determine which half of the current half of the cache the used entry
-		//comes from
-		map[hotColdEntry] = (usedIndex > ((cacheSize / 2) - 1)) ? 0 : 1;
-
-		//Calculate the next hot/cold map entry
-		hotColdEntry += (map[hotColdEntry] == 0) ? ((2 * i) + 1) : ((2 * i) + 2);
-
+		if (usedIndex <= hotColdEntry)
+		{
+			map[hotColdEntry] = 0;
+			hotColdEntry -= int(partition / 2);
+			partition = int(partition / 2);
+		}
+		else
+		{
+			map[hotColdEntry] = 1;
+			hotColdEntry += int(partition / 2);
+			partition = int(partition / 2) + 1;
+		}
 	} //for
-
-
 } //FullAscUpdateHotColdLru
 
 void FullAscHotColdLruReplacementPolicy(ifstream& fin, ofstream& fout)
@@ -253,7 +241,6 @@ void FullAscHotColdLruReplacementPolicy(ifstream& fin, ofstream& fout)
 	char instructionType;
 
 	int lruIndex;		//The index of the cache hit, or the index to replace
-	int hotColdBits;	//Number of hot/cold bits to keep track of
 	int hotColdMap = 0;	//Represent the map to the LRU entry
 
 	bool cacheHit;
@@ -267,17 +254,10 @@ void FullAscHotColdLruReplacementPolicy(ifstream& fin, ofstream& fout)
 		/ FULL_ASSOCIATIVE_LINE_SIZE_BYTES));
 
 	//We need enough hot/cold bits to index the cache
-	hotColdBits = cache.size() - 1;
+	hotCold.resize((cache.size() - 1), 0);
 
-	hotCold.resize(hotColdBits, 0);
-
-	//Calculate the number of offset bits in the addresses
 	offsetBits = (unsigned int)log2(FULL_ASSOCIATIVE_LINE_SIZE_BYTES);
-
-	//Calculate the number of tag bits in the addresses
 	tagBits = ADDRESS_BITS - offsetBits;
-
-	//Build mask bits
 	tagMask = ((int)pow(2, tagBits) - 1) << (offsetBits);
 
 	//While there is data in the input file
@@ -313,7 +293,6 @@ void FullAscHotColdLruReplacementPolicy(ifstream& fin, ofstream& fout)
 		
 		//Update LRU map for the cache hit
 		FullAscHotColdLruUpdate(hotCold, lruIndex, cache.size());
-
 
 		//Increment number of cache access
 		memAccesses++;

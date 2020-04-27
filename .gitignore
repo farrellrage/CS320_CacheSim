@@ -33,6 +33,7 @@
 
 # Build directories
 *.vs
+Debug
 
 # Text files
 *.txt

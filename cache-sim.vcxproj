@@ -18,6 +18,19 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Caches.h" />
+    <ClInclude Include="ConsoleUtilities.h" />
+    <ClInclude Include="ConversionUtilities.h" />
+    <ClInclude Include="Main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Caches.cpp" />
+    <ClCompile Include="CacheUtilities.cpp" />
+    <ClCompile Include="ConsoleUtilities.cpp" />
+    <ClCompile Include="ConversionUtilities.cpp" />
+    <ClCompile Include="Main.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{94586D4E-07CE-46A8-BF98-0564B960BFEE}</ProjectGuid>
@@ -146,9 +159,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="cache-sim.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

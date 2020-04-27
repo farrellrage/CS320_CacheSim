@@ -12,7 +12,7 @@ struct DirectMappedCache {
 struct SetAscCacheEntry {
 	bool valid = false;
 	unsigned int tag = 0;
-	unsigned int turnsSinceLastUsed = 0;
+	unsigned int lruCount = 0;
 }; //SetAsscCacheEntry
 
 struct FullAscCacheEntry {
@@ -35,7 +35,16 @@ void SetAssociativeCacheSim(const string& inputFileName, ofstream& fout);
 void FullAscLruUpdate(vector<FullAscCacheEntry>& cache, int usedIndex);
 void FullAscLruReplacementPolicy(ifstream& fin, ofstream& fout);
 int FindHotColdLruIndex(vector<int>& map);
+void FullAscHotColdLruUpdate(vector<int>& map, int usedIndex, int cacheSize);
 void FullAscHotColdLruReplacementPolicy(ifstream& fin, ofstream& fout);
 void FullyAssociativeCacheSim(const string& inputFileName, ofstream& fout);
+
+void SetAscNoAllocCacheSim(const string& inputFileName, ofstream& fout);
+
+void SetAscNextLinePrefetchingCacheSim(const string& inputFileName,
+	ofstream& fout);
+
+void SetAscNextLinePrefetchOnMissCacheSim(const string& inputFileName,
+	ofstream& fout);
 
 #endif //Caches_h
