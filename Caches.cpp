@@ -227,10 +227,10 @@ void FullyAssociativeCacheSim(const string& inputFileName, ofstream& fout)
 	FullAscLruReplacementPolicy(fin, fout);
 
 	//Reset the input file for the next run
-	//fin.close();
-	//fin.open(inputFileName);
+	fin.close();
+	fin.open(inputFileName);
 
-	//FullAscHotColdLruReplacementPolicy(fin, fout);
+	FullAscHotColdLruReplacementPolicy(fin, fout);
 
 	fin.close();
 } //FullyAssociativeCacheSim

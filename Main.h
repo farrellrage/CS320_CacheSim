@@ -45,11 +45,4 @@ const vector<int> SetAssociativity {
 	16
 };
 
-vector<char> charset(void)
-{
-	return vector<char>({
-		'0','1','2','3','4','5','6','7','8','9'
-		});
-}
-
 #endif // !main_h

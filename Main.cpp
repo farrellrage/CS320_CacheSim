@@ -19,8 +19,6 @@ int main(int argc, char** argv)
 	string inputFileName(argv[1]);
 	string outputFileName(argv[2]);
 
-	
-
 	ofstream fout(outputFileName);	//Output file stream
 	
 	DirectMappedCacheSim(inputFileName, fout);
