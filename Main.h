@@ -1,18 +1,20 @@
 #ifndef main_h
 #define main_h
 
+#include <functional>
+#include <algorithm>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <random>
 #include <vector>
 #include <ctime>
 #include <cmath>
 #include <sys/types.h>
 #include <stdlib.h>
 #include <stdio.h>
-
 
 using namespace std;
 
@@ -42,5 +44,12 @@ const vector<int> SetAssociativity {
 	8,
 	16
 };
+
+vector<char> charset(void)
+{
+	return vector<char>({
+		'0','1','2','3','4','5','6','7','8','9'
+		});
+}
 
 #endif // !main_h

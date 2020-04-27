@@ -23,12 +23,22 @@ int main(int argc, char** argv)
 
 	ofstream fout(outputFileName);	//Output file stream
 	
-	//DirectMappedCacheSim(inputFileName, fout);
-	//SetAssociativeCacheSim(inputFileName, fout);
+	DirectMappedCacheSim(inputFileName, fout);
+	
+	
+	SetAssociativeCacheSim(inputFileName, fout);
+	
+	
 	FullyAssociativeCacheSim(inputFileName, fout);
-	//SetAscNoAllocCacheSim(inputFileName, fout);
-	//SetAscNextLinePrefetchingCacheSim(inputFileName, fout);
-	//SetAscNextLinePrefetchOnMissCacheSim(inputFileName, fout);
+	
+	
+	SetAscNoAllocCacheSim(inputFileName, fout);
+	
+	
+	SetAscNextLinePrefetchingCacheSim(inputFileName, fout);
+	
+	
+	SetAscNextLinePrefetchOnMissCacheSim(inputFileName, fout);
 
 	//Close the output file stream
 	fout.close();

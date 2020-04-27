@@ -33,7 +33,7 @@ void SetAscLruUpdate(vector<vector<SetAscCacheEntry>>& cache,
 	//For each way in the cache
 	for (size_t way = 0; way < cache.size(); way++)
 	{
-		if (way != usedWay)
+		if (way != (size_t)usedWay)
 		{
 			//Increment the LRU count for the entry
 			cache[way][setIndex].lruCount++;
@@ -49,7 +49,7 @@ void FullAscLruUpdate(vector<FullAscCacheEntry>& cache, int usedIndex)
 	//For each entry in the cache, except the used entry
 	for (size_t i = 0; i < cache.size(); i++)
 	{
-		if (i != usedIndex)
+		if (i != (size_t)usedIndex)
 		{
 			//Increment the LRU count for the entry
 			cache[i].lruCount++;
@@ -62,7 +62,6 @@ void FullAscLruUpdate(vector<FullAscCacheEntry>& cache, int usedIndex)
 
 void FullAscLruReplacementPolicy(ifstream& fin, ofstream& fout)
 {
-	#pragma region AlgorithmVariables
 	unsigned int cacheHits = 0;
 	unsigned int memAccesses = 0;
 
@@ -78,7 +77,6 @@ void FullAscLruReplacementPolicy(ifstream& fin, ofstream& fout)
 	bool cacheHit;
 
 	vector<FullAscCacheEntry> cache;
-	#pragma endregion
 
 	//Initialize the cache
 	cache.resize((int)(FULL_ASSOCIATIVE_CACHE_SIZE_BYTES
@@ -229,7 +227,6 @@ void FullAscHotColdLruUpdate(vector<int>& map, int usedIndex, int cacheSize)
 
 void FullAscHotColdLruReplacementPolicy(ifstream& fin, ofstream& fout)
 {
-#pragma region AlgorithmVariables
 	unsigned int cacheHits = 0;
 	unsigned int memAccesses = 0;
 
@@ -241,13 +238,11 @@ void FullAscHotColdLruReplacementPolicy(ifstream& fin, ofstream& fout)
 	char instructionType;
 
 	int lruIndex;		//The index of the cache hit, or the index to replace
-	int hotColdMap = 0;	//Represent the map to the LRU entry
 
 	bool cacheHit;
 
 	vector<FullAscCacheEntry> cache;
 	vector<int> hotCold;
-#pragma endregion
 
 	//Initialize the cache
 	cache.resize((int)(FULL_ASSOCIATIVE_CACHE_SIZE_BYTES

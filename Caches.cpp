@@ -2,7 +2,6 @@
 
 void DirectMappedCacheSim(const string& inputFileName, ofstream& fout)
 {
-	#pragma region AlgorithmVariables
 	ifstream fin;
 
 	int cacheHits = 0;
@@ -16,7 +15,6 @@ void DirectMappedCacheSim(const string& inputFileName, ofstream& fout)
 	char instructionType;
 
 	vector<DirectMappedCache> cache;
-	#pragma endregion
 	
 	//Calculate number of bits in the offset
 	offsetBits = (unsigned int)log2(CACHE_LINE_SIZE_BYTES);
@@ -26,7 +24,6 @@ void DirectMappedCacheSim(const string& inputFileName, ofstream& fout)
 		i_cache < DirectMappedCacheSizeBytes.size();
 		i_cache++)
 	{
-		#pragma region LoopInit
 		//Initialize counters for the current loop
 		cacheHits = 0; memoryAccesses = 0;
 		fin.open(inputFileName);
@@ -49,7 +46,6 @@ void DirectMappedCacheSim(const string& inputFileName, ofstream& fout)
 		//Build bit masks for the current loop
 		indexMask = ((int)pow(2, indexBits) - 1) << offsetBits;
 		tagMask = ((int)pow(2, tagBits) - 1) << (offsetBits + indexBits);
-		#pragma endregion
 
 		//While there is data in the input file
 		while (fin >> instructionType >> hex >> targetAddr)
@@ -89,15 +85,12 @@ void DirectMappedCacheSim(const string& inputFileName, ofstream& fout)
 
 void SetAssociativeCacheSim(const string& inputFileName, ofstream& fout)
 {
-	#pragma region AlgorithmVariables
 	ifstream fin;
 
 	int cacheHits = 0;
 	int memoryAccesses = 0;
 
-	bool validEntry = false;
 	int wayIndexToReplace;
-	int changedWay = 0;
 	int hitWay;
 	bool tagMatch = false;
 
@@ -114,14 +107,12 @@ void SetAssociativeCacheSim(const string& inputFileName, ofstream& fout)
 
 	//Calculate number of bits in the offset
 	offsetBits = (unsigned int)log2(SET_ASSOCIATIVE_LINE_SIZE_BYTES);
-	#pragma endregion
 
 	//For each set size to simulate
 	for (size_t i_setType = 0;
 		i_setType < SetAssociativity.size();
 		i_setType++)
 	{
-		#pragma region LoopInit
 		//Initialize counters for the current loop
 		cacheHits = 0; memoryAccesses = 0;
 
@@ -139,16 +130,10 @@ void SetAssociativeCacheSim(const string& inputFileName, ofstream& fout)
 		tagBits = ADDRESS_BITS - (indexBits + offsetBits);
 		tagMask = ((int)pow(2, tagBits) - 1) << (offsetBits + indexBits);
 
-		//Build bit masks for the current loop
-
-		#pragma endregion
-
 		//While there is data in the input file
 		while (fin >> instructionType >> hex >> targetAddr)
 		{
-			#pragma region AddrLoopInit
 			wayIndexToReplace = 0;
-			changedWay = 0;
 
 			//Determine the tag for the current address
 			tag = (targetAddr & tagMask) >> (offsetBits + indexBits);
@@ -160,7 +145,6 @@ void SetAssociativeCacheSim(const string& inputFileName, ofstream& fout)
 			waysToIncreaseLRU.clear();
 			tagMatch = false;
 			hitWay = -1;
-			#pragma endregion
 
 			for (unsigned int way = 0; way < cache.size(); way++)
 			{
@@ -236,34 +220,29 @@ void SetAssociativeCacheSim(const string& inputFileName, ofstream& fout)
 
 void FullyAssociativeCacheSim(const string& inputFileName, ofstream& fout)
 {
-	#pragma region AlgorithmVariables
 	ifstream fin(inputFileName);
 
-	#pragma endregion
 
 
-	//FullAscLruReplacementPolicy(fin, fout);
+	FullAscLruReplacementPolicy(fin, fout);
 
 	//Reset the input file for the next run
 	//fin.close();
 	//fin.open(inputFileName);
 
-	FullAscHotColdLruReplacementPolicy(fin, fout);
+	//FullAscHotColdLruReplacementPolicy(fin, fout);
 
 	fin.close();
 } //FullyAssociativeCacheSim
 
 void SetAscNoAllocCacheSim(const string& inputFileName, ofstream& fout)
 {
-	#pragma region AlgorithmVariables
 	ifstream fin;
 
 	int cacheHits = 0;
 	int memoryAccesses = 0;
 
-	bool validEntry = false;
 	int wayIndexToReplace;
-	int changedWay = 0;
 	int hitWay;
 	bool tagMatch = false;
 
@@ -280,14 +259,12 @@ void SetAscNoAllocCacheSim(const string& inputFileName, ofstream& fout)
 
 	//Calculate number of bits in the offset
 	offsetBits = (unsigned int)log2(SET_ASSOCIATIVE_LINE_SIZE_BYTES);
-	#pragma endregion
 
 	//For each set size to simulate
 	for (size_t i_setType = 0;
 		i_setType < SetAssociativity.size();
 		i_setType++)
 	{
-		#pragma region LoopInit
 		//Initialize counters for the current loop
 		cacheHits = 0; memoryAccesses = 0;
 
@@ -305,16 +282,10 @@ void SetAscNoAllocCacheSim(const string& inputFileName, ofstream& fout)
 		tagBits = ADDRESS_BITS - (indexBits + offsetBits);
 		tagMask = ((int)pow(2, tagBits) - 1) << (offsetBits + indexBits);
 
-		//Build bit masks for the current loop
-
-		#pragma endregion
-
 		//While there is data in the input file
 		while (fin >> instructionType >> hex >> targetAddr)
 		{
-			#pragma region AddrLoopInit
 			wayIndexToReplace = 0;
-			changedWay = 0;
 
 			//Determine the tag for the current address
 			tag = (targetAddr & tagMask) >> (offsetBits + indexBits);
@@ -326,7 +297,6 @@ void SetAscNoAllocCacheSim(const string& inputFileName, ofstream& fout)
 			waysToIncreaseLRU.clear();
 			tagMatch = false;
 			hitWay = -1;
-			#pragma endregion
 
 			for (unsigned int way = 0; way < cache.size(); way++)
 			{
@@ -410,15 +380,12 @@ void SetAscNoAllocCacheSim(const string& inputFileName, ofstream& fout)
 void SetAscNextLinePrefetchingCacheSim(const string& inputFileName,
 	ofstream& fout)
 {
-	#pragma region AlgorithmVariables
 	ifstream fin;
 
 	int cacheHits = 0;
 	int memoryAccesses = 0;
 
-	bool validEntry = false;
 	int wayIndexToReplace;
-	int changedWay = 0;
 	int hitWay;
 	bool tagMatch = false;
 
@@ -435,14 +402,12 @@ void SetAscNextLinePrefetchingCacheSim(const string& inputFileName,
 
 	//Calculate number of bits in the offset
 	offsetBits = (unsigned int)log2(SET_ASSOCIATIVE_LINE_SIZE_BYTES);
-		#pragma endregion
 
 	//For each set size to simulate
 	for (size_t i_setType = 0;
 		i_setType < SetAssociativity.size();
 		i_setType++)
 	{
-		#pragma region LoopInit
 		//Initialize counters for the current loop
 		cacheHits = 0; memoryAccesses = 0;
 
@@ -460,16 +425,10 @@ void SetAscNextLinePrefetchingCacheSim(const string& inputFileName,
 		tagBits = ADDRESS_BITS - (indexBits + offsetBits);
 		tagMask = ((int)pow(2, tagBits) - 1) << (offsetBits + indexBits);
 
-		//Build bit masks for the current loop
-
-		#pragma endregion
-
 		//While there is data in the input file
 		while (fin >> instructionType >> hex >> targetAddr)
 		{
-			#pragma region AddrLoopInit
 			wayIndexToReplace = 0;
-			changedWay = 0;
 
 			//Determine the tag for the current address
 			tag = (targetAddr & tagMask) >> (offsetBits + indexBits);
@@ -481,7 +440,6 @@ void SetAscNextLinePrefetchingCacheSim(const string& inputFileName,
 			waysToIncreaseLRU.clear();
 			tagMatch = false;
 			hitWay = -1;
-			#pragma endregion
 
 			for (unsigned int way = 0; way < cache.size(); way++)
 			{
@@ -626,15 +584,12 @@ void SetAscNextLinePrefetchingCacheSim(const string& inputFileName,
 void SetAscNextLinePrefetchOnMissCacheSim(const string& inputFileName,
 	ofstream& fout)
 {
-#pragma region AlgorithmVariables
 	ifstream fin;
 
 	int cacheHits = 0;
 	int memoryAccesses = 0;
 
-	bool validEntry = false;
 	int wayIndexToReplace;
-	int changedWay = 0;
 	int hitWay;
 	bool tagMatch = false;
 
@@ -651,14 +606,12 @@ void SetAscNextLinePrefetchOnMissCacheSim(const string& inputFileName,
 
 	//Calculate number of bits in the offset
 	offsetBits = (unsigned int)log2(SET_ASSOCIATIVE_LINE_SIZE_BYTES);
-#pragma endregion
 
 	//For each set size to simulate
 	for (size_t i_setType = 0;
 		i_setType < SetAssociativity.size();
 		i_setType++)
 	{
-#pragma region LoopInit
 		//Initialize counters for the current loop
 		cacheHits = 0; memoryAccesses = 0;
 
@@ -678,14 +631,11 @@ void SetAscNextLinePrefetchOnMissCacheSim(const string& inputFileName,
 
 		//Build bit masks for the current loop
 
-#pragma endregion
 
 //While there is data in the input file
 		while (fin >> instructionType >> hex >> targetAddr)
 		{
-#pragma region AddrLoopInit
 			wayIndexToReplace = 0;
-			changedWay = 0;
 
 			//Determine the tag for the current address
 			tag = (targetAddr & tagMask) >> (offsetBits + indexBits);
@@ -697,7 +647,6 @@ void SetAscNextLinePrefetchOnMissCacheSim(const string& inputFileName,
 			waysToIncreaseLRU.clear();
 			tagMatch = false;
 			hitWay = -1;
-#pragma endregion
 
 			for (unsigned int way = 0; way < cache.size(); way++)
 			{
